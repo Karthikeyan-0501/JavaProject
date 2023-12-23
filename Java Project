@@ -1,0 +1,145 @@
+package Project;
+import java.awt.event.*;
+import java.io.*;
+import java.util.ArrayList;
+import javax.swing.*;
+//import Questions.quiz;
+public class Questions extends JFrame implements ActionListener{
+	ArrayList<String> questions=new ArrayList<>();
+	ArrayList<String> option1=new ArrayList<>();
+	ArrayList<String> option2=new ArrayList<>();
+	ArrayList<String> option3=new ArrayList<>();
+	ArrayList<String> option4=new ArrayList<>();
+	JButton next,previous,convert;
+	JLabel l,l2,l1,l3,l4;
+	JTextField qn,op1,op2,op3,op4;
+	int current=1,total=5;
+	Questions(String a)
+	{
+		super(a);
+		previous=new JButton("Previous");
+		next=new JButton("Next");
+		convert=new JButton("Convert to HTML");
+		l=new JLabel("Enter the Question :"+current);
+		l1=new JLabel("Option 1");
+		l2=new JLabel("Option 2");
+		l3=new JLabel("Option 3");
+		l4=new JLabel("Option 4");
+		qn=new JTextField();
+		op1=new JTextField();
+		op2=new JTextField();
+		op3=new JTextField();
+		op4=new JTextField();
+		setVisible(true);
+		setLayout(null);
+		 if(current==1)
+	     {
+	       	previous.setEnabled(false);
+	     }
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(1000,1000);
+		intializecomponents();
+	}
+	private void intializecomponents()
+	{
+		l.setBounds(50, 80,200,30);
+		l1.setBounds(100, 120,200,30);
+		l2.setBounds(100, 160,200,30);
+		l3.setBounds(100, 200,200,30);
+		l4.setBounds(100, 240,200,30);
+		qn.setBounds(180, 80, 200, 30);
+		op1.setBounds(180, 120, 200, 30);
+		op2.setBounds(180, 160, 200, 30);
+		op3.setBounds(180, 200, 200, 30);
+		op4.setBounds(180, 240, 200, 30);
+		previous.setBounds(100, 280, 100, 30);
+		next.setBounds(220, 280, 100, 30);
+		convert.setBounds(340, 280, 150, 30);
+		previous.addActionListener(this);
+		next.addActionListener(this);
+		convert.addActionListener(this);
+		add(op1);
+		add(op3);
+		add(op2);
+		add(op4);
+		add(qn);
+		add(l);
+		add(l1);
+		add(l2);
+		add(l3);
+		add(l4);
+		add(previous);
+		add(next);
+		add(convert);
+	}
+	 private void updateComponents() {
+	        l.setText("Enter the Question: " + (current));
+	        qn.setText("");
+	        op1.setText("");
+	        op2.setText("");
+	        op3.setText("");
+	        op4.setText("");
+	        previous.setEnabled(current > 1);
+	        next.setEnabled(current > 0);
+	    }
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		try
+		{
+			
+		if(e.getSource() == next)
+		{
+			questions.add(qn.getText());
+			option1.add(op1.getText());
+			option2.add(op2.getText());
+			option3.add(op3.getText());
+			option4.add(op4.getText());
+			current++;
+			updateComponents();
+		}
+		else if(e.getSource()== previous)
+		{
+			current--;
+			updateComponents();
+		}
+		else if(e.getSource()==convert)
+		{
+			converthtml();
+		}
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex.toString());
+		}
+	}
+	public void converthtml()
+	{
+		try
+		{
+			BufferedWriter writer=new BufferedWriter(new FileWriter("quiz.html"));
+			writer.write("<html>\n<head>\n<title>Quiz</title></head>\n</head><body>\n");
+			for(int i=0;i<questions.size();i++)
+			{
+				writer.write("<p>\n<strong>Questions"+(i+1)+":</strong>\n"+questions.get(i)+"</p>\n");
+				writer.write("<form>");
+				writer.write("<input type=\"radio\" name=\"q"+(i+1)+"\"value =\"1\">"+option1.get(i)+"<br>\n");
+				writer.write("<input type=\"radio\" name=\"q"+(i+1)+"\"value =\"2\">"+option2.get(i)+"<br>\n");
+				writer.write("<input type=\"radio\" name=\"q"+(i+1)+"\"value =\"3\">"+option3.get(i)+"<br>\n");
+				writer.write("<input type=\"radio\" name=\"q"+(i+1)+"\"value =\"4\">"+option4.get(i)+"<br>\n");
+				writer.write("</form>");
+			}
+			writer.write("</body>\n</html>");
+			writer.close();
+			JOptionPane.showMessageDialog(this, "Conversion to HTML successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+			setVisible(false);
+		}
+		catch(Exception ex)
+		{
+			JOptionPane.showMessageDialog(this, "Error saving HTML file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	public static void main(String[] args)
+	{
+		new Questions("Quiz");
+	}
+}
